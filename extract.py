@@ -21,6 +21,30 @@ def extract(source: str):
 
     ruler = nlp.add_pipe("entity_ruler")
 
+    # add pattern tour interesting
+
+    # add pattern wasn't fun
+
+    # add pattern would not recommend
+
+    # add pattern funny with a big knowledge
+
+    # add pattern absolutely love it
+
+    # add pattern better with friends
+
+    # add pattern cute, narrowed streets and spots
+
+    # add pattern voice was loud and clear
+
+    # add pattern Callum was amazing
+
+    # add pattern intresting Tour
+
+    # add pattern not very ghostly
+
+    # fix 's gruesome history
+    # add optional and
     dependency1 = [
         {"POS": {"IN": ["AUX", "PART", "VERB"]}, "OP": "{0,3}", "DEP": {"NOT_IN": ["auxpass", "conj"]}},
         {"DEP": "det", "LOWER": {"NOT_IN": ["the", "all", "a"]}, "OP": "?"},
@@ -28,11 +52,13 @@ def extract(source: str):
         {"POS": {"IN": ["NNP", "NOUN"]}, "OP": "{1,}"}
     ]
 
+    # prevent CCONJ for last word (fixed?)
     dependency2 = [
         {"POS": {"IN": ["NNP", "NOUN"]}, "OP": "{1,2}"},
         {"POS": "AUX"},
         {"DEP": "det", "LOWER": {"NOT_IN": ["the", "all"]}, "OP": "?"},
-        {"POS": {"IN": ["ADJ", "ADV", "CCONJ"]}, "OP": "{1,}"},
+        {"POS": {"IN": ["ADJ", "ADV"]}, "OP": "{1,}"},
+        {"POS": {"IN": ["ADJ", "ADV", "CCONJ"]}, "OP": "{0,}"},
     ]
 
     dependency3 = [
@@ -100,7 +126,6 @@ def extract(source: str):
 
     ]
 
-    # patterns are already added?
     ruler.add_patterns(patterns)
 
     doc = nlp(source)
@@ -115,8 +140,6 @@ def extract(source: str):
 
     return opinions
 
-
-rev = open("reviews.txt", "r", encoding="utf-8")
 
 def test():
     opinion1 = """A warm-hearted waiter
