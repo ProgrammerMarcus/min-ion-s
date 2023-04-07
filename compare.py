@@ -71,4 +71,4 @@ def fuzzy(a: str, b: str):
     """
     nlp = spacy.load('en_core_web_sm')
     return fuzz.token_set_ratio(" ".join([token.lemma_ for token in nlp(a)]),
-                                " ".join([token.lemma_ for token in nlp(b)]))
+                                " ".join([token.lemma_ for token in nlp(b)])) / 100

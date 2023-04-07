@@ -7,8 +7,13 @@ from spacy.lang.en import English
 
 
 def extract(source: str):
+    """
+    Extracts opinions from strings.
+    :param source:
+    :return:
+    """
     # lg performs best so far
-    nlp = spacy.load("en_core_web_lg")
+    nlp = spacy.load("en_core_web_sm")
     nlp.disable_pipes("ner")
 
     # prevent splitting of hyphens by removing rule
