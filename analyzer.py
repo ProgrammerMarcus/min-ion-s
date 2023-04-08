@@ -59,7 +59,7 @@ def analyze(reviews: list):
         # Getting the polarity score of every opinion extracted from a review
         polarity_scores = [TextBlob(o).sentiment.polarity for o in opinions]
         # The sum of the polarity score of each opinion from a review
-        polarity_score = sum(polarity_scores) / len(polarity_scores)
+        polarity_score = sum(polarity_scores) / len(polarity_scores) if len(polarity_scores) else 0
 
         sentiment = {
             "review": r,
