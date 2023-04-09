@@ -1,5 +1,5 @@
-import spacy
 from fuzzywuzzy import fuzz
+from spacy.tokens.doc import Doc
 
 whitelist = {"ADJ": "adjective",
              "ADV": "adverb",
@@ -38,19 +38,18 @@ whitelist = {"ADJ": "adjective",
              }
 
 
-def compare(a: str, b: str):
+def compare(a: Doc, b: Doc):
     """
     Compares a to b by comparing distance of lemma words.
     Compares distance of words, so that similar words are considered different.
     POS tagging is used to exclude certain common words such as "the".
     :return:
-    :param a: An (opinion) as a string.
-    :param b: An (opinion) as a string.
+    :param a: An (opinion) as a Doc.
+    :param b: An (opinion) as a Doc.
     """
-    nlp = spacy.load('en_core_web_sm')
 
-    lemma_a = [token.lemma_ for token in filter(lambda t: t.tag_ in whitelist, [token for token in nlp(a)])]
-    lemma_b = [token.lemma_ for token in filter(lambda t: t.tag_ in whitelist, [token for token in nlp(b)])]
+    lemma_a = [token.lemma_ for token in filter(lambda t: t.tag_ in whitelist, [token for token in a])]
+    lemma_b = [token.lemma_ for token in filter(lambda t: t.tag_ in whitelist, [token for token in b])]
     score = 0
 
     for position, value in enumerate(lemma_a):
@@ -61,14 +60,14 @@ def compare(a: str, b: str):
     return score / len(lemma_a) if len(lemma_a) > 0 else 0
 
 
-def fuzzy(a: str, b: str):
+def fuzzy(a: Doc, b: Doc):
     """
     Compares a to b by comparing difference of lemma words.
     Note that this compares the characters in the words, so similar words will be considered similar.
     :return: The similarity as a percentage.
-    :param a: An (opinion) as a string.
-    :param b: An (opinion) as a string.
+    :param a: An (opinion) as a Doc.
+    :param b: An (opinion) as a Doc.
     """
-    nlp = spacy.load('en_core_web_sm')
-    return fuzz.token_set_ratio(" ".join([token.lemma_ for token in nlp(a)]),
-                                " ".join([token.lemma_ for token in nlp(b)])) / 100
+
+    return fuzz.token_set_ratio(" ".join([token.lemma_ for token in a]),
+                                " ".join([token.lemma_ for token in b])) / 100

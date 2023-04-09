@@ -5,47 +5,17 @@ from spacy import displacy
 from spacy.matcher import Matcher
 from spacy.lang.en import English
 
-
-def extract(source: str):
-    """
-    Extracts opinions from strings.
-    :param source:
-    :return:
-    """
-    # lg performs best so far
-    nlp = spacy.load("en_core_web_sm")
-    nlp.disable_pipes("ner")
-
-    # prevent splitting of hyphens by removing rule
-    infix = compile_infix_regex([x for x in nlp.Defaults.infixes if '-|–|—|--|---|——|~' not in x])
-    nlp.tokenizer = Tokenizer(nlp.vocab, prefix_search=nlp.tokenizer.prefix_search,
-                              suffix_search=nlp.tokenizer.suffix_search,
-                              infix_finditer=infix.finditer,
-                              token_match=nlp.tokenizer.token_match,
-                              rules=nlp.Defaults.tokenizer_exceptions)
-
-    ruler = nlp.add_pipe("entity_ruler")
-
+def get_patterns():
     # add pattern tour interesting
-
     # add pattern wasn't fun
-
     # add pattern would not recommend
-
     # add pattern funny with a big knowledge
-
     # add pattern absolutely love it
-
     # add pattern better with friends
-
     # add pattern cute, narrowed streets and spots
-
     # add pattern voice was loud and clear
-
     # add pattern Callum was amazing
-
     # add pattern intresting Tour
-
     # add pattern not very ghostly
 
     # fix 's gruesome history
@@ -130,8 +100,29 @@ def extract(source: str):
         {"label": "CONSTITUENCY_5", "pattern": constituency5},
 
     ]
+    return patterns
 
-    ruler.add_patterns(patterns)
+def extract(source: str):
+    """
+    Extracts opinions from strings.
+    :param source:
+    :return:
+    """
+    # lg performs best so far
+    nlp = spacy.load("en_core_web_sm")
+    nlp.disable_pipes("ner")
+
+    # prevent splitting of hyphens by removing rule
+    infix = compile_infix_regex([x for x in nlp.Defaults.infixes if '-|–|—|--|---|——|~' not in x])
+    nlp.tokenizer = Tokenizer(nlp.vocab, prefix_search=nlp.tokenizer.prefix_search,
+                              suffix_search=nlp.tokenizer.suffix_search,
+                              infix_finditer=infix.finditer,
+                              token_match=nlp.tokenizer.token_match,
+                              rules=nlp.Defaults.tokenizer_exceptions)
+
+    ruler = nlp.add_pipe("entity_ruler")
+
+    ruler.add_patterns(get_patterns())
 
     doc = nlp(source)
 
