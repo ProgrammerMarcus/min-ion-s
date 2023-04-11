@@ -6,25 +6,27 @@ from spacy.matcher import Matcher
 from spacy.lang.en import English
 
 def get_patterns():
-    # add pattern tour interesting
-    # add pattern wasn't fun
-    # add pattern would not recommend
-    # add pattern funny with a big knowledge
-    # add pattern absolutely love it
-    # add pattern better with friends
-    # add pattern cute, narrowed streets and spots
-    # add pattern voice was loud and clear
-    # add pattern Callum was amazing
-    # add pattern intresting Tour
-    # add pattern not very ghostly
-
-    # fix 's gruesome history
-    # add optional and
     dependency1 = [
-        {"POS": {"IN": ["AUX", "PART", "VERB"]}, "OP": "{0,3}", "DEP": {"NOT_IN": ["auxpass", "conj"]}},
+        {"POS": {"IN": ["PROPN", "AUX", "PART", "VERB"]}, "OP": "{0,3}", "DEP": {"NOT_IN": ["auxpass", "conj"]}},
         {"DEP": "det", "LOWER": {"NOT_IN": ["the", "all", "a"]}, "OP": "?"},
         {"POS": {"IN": ["ADJ", "ADV"]}, "DEP": {"NOT_IN": ["npadvmod", "advmod"]}, "OP": "{1,5}"},
         {"POS": {"IN": ["NNP", "NOUN"]}, "OP": "{1,}"}
+    ]
+
+    dependency1_a = [
+        {"POS": {"IN": ["PROPN", "AUX", "PART", "VERB"]}, "OP": "{0,3}", "DEP": {"NOT_IN": ["auxpass", "conj"]}},
+        {"DEP": "det", "LOWER": {"NOT_IN": ["the", "all", "a"]}, "OP": "?"},
+        {"POS": {"IN": ["ADJ", "ADV"]}, "DEP": {"NOT_IN": ["npadvmod", "advmod"]}, "OP": "{1,5}"},
+        {"POS": {"IN": ["NNP", "NOUN"]}, "OP": "{1,}"},
+        {"POS": {"IN": ["PART", "VERB", "PRON", "ADJ", "NOUN"]}, "OP": "{2,5}"}
+    ]
+
+    dependency1_c = [
+        {"POS": {"IN": ["PROPN", "AUX", "PART", "VERB"]}, "OP": "{0,3}", "DEP": {"NOT_IN": ["auxpass", "conj"]}},
+        {"DEP": "det", "LOWER": {"NOT_IN": ["the", "all", "a"]}, "OP": "?"},
+        {"POS": {"IN": ["ADJ", "ADV"]}, "DEP": {"NOT_IN": ["npadvmod", "advmod"]}, "OP": "{1,5}"},
+        {"POS": {"IN": ["NNP", "NOUN"]}, "OP": "{1,}"},
+        {"POS": {"IN": ["NNP", "NOUN", "CCONJ"]}, "OP": "{2,}"}
     ]
 
     # prevent CCONJ for last word (fixed?)
@@ -33,7 +35,14 @@ def get_patterns():
         {"POS": "AUX"},
         {"DEP": "det", "LOWER": {"NOT_IN": ["the", "all"]}, "OP": "?"},
         {"POS": {"IN": ["ADJ", "ADV"]}, "OP": "{1,}"},
+    ]
+
+    dependency2_a = [
+        {"POS": {"IN": ["NNP", "NOUN"]}, "OP": "{1,2}"},
+        {"POS": "AUX"},
+        {"DEP": "det", "LOWER": {"NOT_IN": ["the", "all"]}, "OP": "?"},
         {"POS": {"IN": ["ADJ", "ADV", "CCONJ"]}, "OP": "{0,}"},
+        {"POS": {"IN": ["ADJ", "ADV"]}, "OP": "{1,}"},
     ]
 
     dependency3 = [
@@ -91,7 +100,10 @@ def get_patterns():
 
     patterns = [
         {"label": "DEPENDENCY_1", "pattern": dependency1},
+        {"label": "DEPENDENCY_1_EXTENDED", "pattern": dependency1_a},
+        {"label": "DEPENDENCY_1_CCONJ", "pattern": dependency1_c},
         {"label": "DEPENDENCY_2", "pattern": dependency2},
+        {"label": "DEPENDENCY_2", "pattern": dependency2_a},
         {"label": "DEPENDENCY_3", "pattern": dependency3},
         {"label": "CONSTITUENCY_1", "pattern": constituency1},
         {"label": "CONSTITUENCY_2", "pattern": constituency2},
@@ -101,6 +113,79 @@ def get_patterns():
 
     ]
     return patterns
+
+def get_patterns_noun():
+    """
+    Gets patterns based on "Fine-Grained Opinion Summarization with Minimal Supervision"
+    :return: Patterns for the entity ruler.
+    """
+    dependency_1 = [
+        {"POS": {"IN": ["DET"]}, "DEP": "det", "OP": "?"},
+        {"POS": {"IN": ["ADJ", "ADV"]}, "DEP": "amod"},
+        {"POS": {"NOT_IN": []}, "OP": "?"},
+        {"POS": {"IN": ["NOUN", "PROPN"]}},
+    ]
+
+    dependency_2 = [
+        {"POS": {"IN": ["NOUN", "PROPN"]}, "DEP": "nsubj"},
+        {"POS": {"NOT_IN": []}, "OP": "?"},
+        {"POS": {"IN": ["CCONJ"]}, "OP": "{0,}"},
+        {"POS": {"IN": ["ADJ", "ADV"]}, "OP": "{1,}"},
+    ]
+
+    constituency_1 = [
+        {"POS": {"IN": ["DET", "VERB", "NOUN", "PROPN"]}, "OP": "{1,}"},
+        {"POS": {"IN": ["VERB", "NOUN", "PRON", "NOUN", "PROPN", "ADP"]}, "OP": "{1,}"},
+        {"POS": {"IN": ["NOUN", "CCONJ"]}, "OP": "{0,}"},
+        {"POS": {"IN": ["NOUN", "AUX", "PART", "VERB", "PRON", "ADV", "ADJ"]}, "OP": "{2,}", "DEP": {"NOT_IN": ["amod"]}},
+    ]
+
+    constituency_2 = [
+        {"POS": {"IN": ["DET", "VERB", "NOUN", "PROPN"]}, "OP": "{1,}"},
+        {"POS": {"IN": ["VERB", "NOUN", "PRON", "NOUN", "PROPN", "ADP"]}, "OP": "{1,}"},
+        {"POS": {"IN": ["NOUN", "CCONJ"]}, "OP": "{0,}"},
+        {"POS": {"IN": ["NOUN", "AUX", "PART", "VERB", "ADP", "PRON", "ADV", "ADJ"]}, "OP": "{1,}", "DEP": {"NOT_IN": ["amod"]}},
+        {"POS": {"IN": ["NOUN", "PRON", "ADJ"]}, "OP": "{1,}"},
+    ]
+
+    patterns = [
+        {"label": "NOUN_DEPENDENCY_1", "pattern": dependency_1},
+        {"label": "NOUN_DEPENDENCY_2", "pattern": dependency_2},
+        {"label": "NOUN_CONSTITUENCY_1", "pattern": constituency_1},
+        {"label": "NOUN_CONSTITUENCY_2", "pattern": constituency_2},
+    ]
+    return patterns
+
+def get_patterns_extended():
+    """
+    Gets additional patterns for more matches.
+    :return: Patterns for the entity ruler.
+    """
+    additional_1 = [
+        {"POS": {"IN": ["ADJ"]}, "DEP": "amod"},
+        {"POS": {"IN": ["CCONJ", "ADJ"]}, "OP": "{2}"},
+        {"POS": {"IN": ["NOUN"]}},
+    ]
+
+    recommend_1 = [
+        {"OP": "?", "DEP": {"IN": ["advmod", "aux"]}},
+        {"LOWER": {"FUZZY": "recommend"}},
+        {"OP": "?", "DEP": "dobj"},
+    ]
+
+    describe_1 = [
+        {"POS": "PART", "DEP": "neg", "OP": "?"},
+        {"OP": "?", "DEP": "advmod"},
+        {"POS": {"IN": ["ADJ", "ADV"]}, "DEP": {"NOT_IN": ["ccomp", "amod", "advmod", "attr"]}},
+    ]
+
+    patterns = [
+        {"label": "ADDITIONAL_1", "pattern": additional_1},
+        {"label": "RECOMMEND_1", "pattern": recommend_1},
+        {"label": "DESCRIBE_1", "pattern": describe_1}
+    ]
+    return patterns
+
 
 def extract(source: str):
     """
@@ -122,20 +207,19 @@ def extract(source: str):
 
     ruler = nlp.add_pipe("entity_ruler")
 
-    ruler.add_patterns(get_patterns())
+    ruler.add_patterns(get_patterns_noun() + get_patterns_extended() + get_patterns())
 
     doc = nlp(source)
-
+    print(source)
     opinions = set()
     for ent in doc.ents:
         print(ent.label_, "|", ent.text)
         opinions.add(ent.text)
     print(opinions)
     # http://localhost:5000/
-    # displacy.serve(doc, style="dep")
+    displacy.serve(doc, style="dep")
 
     return opinions
-
 
 def test():
     opinion1 = """A warm-hearted waiter

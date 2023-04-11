@@ -1,4 +1,4 @@
-sources = {
+sources = [
     "Absolutely wonderful! Perfect mix of gore and humour with the opportunity to see Gamla Stan in a new light. Corey was a fantastic guide and I thoroughly enjoyed this tour, especially the crypt at the end. Highly recommend this!",
     "Our guide was very good and made the tour interesting. This was more of a gory history tour than a ghost tour. That being said it was interesting and the guide was very good.",
     "What a fantastic experience it was! Our guide Callum is an amazing story teller, funny with a big knowledge of Swedish history! It was 1,5 hour best spend! We saw Stockholm from the different perspective! Absolutely love it- every minute of it!",
@@ -29,7 +29,7 @@ Wish all walking guides were as good.""",
     """Very funny guide Chris. Great way to learn about history in a spooky spirit. 8/10 would recommend. But bring warm clothes if in winter. """,
     """It was very nice to explore the city with the guide. The trip was interactive and very exciting and the guide had great charisma"""
 
-}
+]
 
 
 def get_sources():

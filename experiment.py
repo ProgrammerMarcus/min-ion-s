@@ -4,7 +4,13 @@ import compare
 import extract
 from spacytextblob.spacytextblob import SpacyTextBlob  # DO NOT REMOVE, IGNORE THE LIES OF THE IDE!
 
-def check_sentiment(v1: Doc, v2: Doc):
+def check_sentiment(v1: Doc, v2: Doc) -> bool:
+    """
+    Checks if two opinions have the same sentiment.
+    :param v1: Opinion 1.
+    :param v2: Opinion 2.
+    :return: Boolean result.
+    """
     v1 = v1._.blob.polarity
     v2 = v2._.blob.polarity
     if v1 > 0 and v2 > 0:
@@ -16,7 +22,13 @@ def check_sentiment(v1: Doc, v2: Doc):
     return False
 
 
-def check_category(v1: Doc, v2: Doc):
+def check_category(v1: Doc, v2: Doc) -> bool:
+    """
+    Check if two opinions belong to the same category.
+    :param v1: Opinion 1.
+    :param v2: Opinion 2.
+    :return: Boolean result.
+    """
     labels1 = set([x.label_ for x in v1.ents])
     labels2 = set([x.label_ for x in v2.ents])
     if len(labels1) == 0 and len(labels2) == 0:
@@ -26,7 +38,7 @@ def check_category(v1: Doc, v2: Doc):
     return False
 
 
-def preparation(reviews: list):
+def preparation(reviews: list) -> list:
     """
     Extracts opinions, and then adds necessary data to opinions.
     :param reviews: The reviews to process.
@@ -39,7 +51,13 @@ def preparation(reviews: list):
     return docs
 
 
-def group_dsc(reviews: list):
+def group_dsc(reviews: list) -> list:
+    """
+    Groups opinions into groups based on sentiment, category, and text sequence.
+    Text sequence uses custom method to compare word sequence.
+    :param reviews: The reviews.
+    :return: Opinions in grouped together.
+    """
     docs = preparation(reviews)
     grouped = list()
     for doc in docs:
@@ -53,7 +71,13 @@ def group_dsc(reviews: list):
             docs.remove(r)
     return grouped
 
-def group_d(reviews: list):
+def group_d(reviews: list) -> list:
+    """
+    Groups opinions into groups based on text sequence.
+    Text sequence uses custom method to compare word sequence.
+    :param reviews: The reviews.
+    :return: Opinions in grouped together.
+    """
     docs = preparation(reviews)
     grouped = list()
     for doc in docs:
@@ -64,7 +88,13 @@ def group_d(reviews: list):
             docs.remove(r)
     return grouped
 
-def group_fsc(reviews: list):
+def group_fsc(reviews: list) -> list:
+    """
+    Groups opinions into groups based on sentiment, category, and text sequence.
+    Text sequence uses levenshtein distance to compare.
+    :param reviews: The reviews.
+    :return: Opinions in grouped together.
+    """
     docs = preparation(reviews)
     grouped = list()
     for doc in docs:
@@ -78,7 +108,13 @@ def group_fsc(reviews: list):
             docs.remove(r)
     return grouped
 
-def group_f(reviews: list):
+def group_f(reviews: list) -> list:
+    """
+    Groups opinions into groups based on text sequence.
+    Text sequence uses levenshtein distance to compare.
+    :param reviews: The reviews.
+    :return: Opinions in grouped together.
+    """
     docs = preparation(reviews)
     grouped = list()
     for doc in docs:
@@ -90,8 +126,13 @@ def group_f(reviews: list):
     return grouped
 
 
-def experiment(reviews: list):
-    grouped = group_d(reviews)
+def experiment(reviews: list) -> dict:
+    """
+    Groups opinions into minorities and majorities.
+    :param reviews: A list of reviews.
+    :return: Opinions grouped into majorities and minorities.
+    """
+    grouped = group_dsc(reviews)
     minorities = list()
     majorities = list()
     for g in grouped:
@@ -100,5 +141,4 @@ def experiment(reviews: list):
             minorities += [g]
         else:
             majorities += [g]
-
-    print("DIFFERENCE (NOVEL) ONLY", "\n###MINORITY###\n", minorities, "\n###MAJORITY###\n", majorities)
+    return {"minorities": minorities, "majorities": majorities}
