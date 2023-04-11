@@ -1,6 +1,12 @@
+import pattern.text.en
 import spacy
 from spacytextblob.spacytextblob import TextBlob
+from textblob.sentiments import NaiveBayesAnalyzer
+# from textblob.classifiers import NaiveBayesClassifier
+from textblob.sentiments import PatternAnalyzer
+from textblob import Blobber
 
+import context
 import extract
 import source
 
@@ -49,26 +55,28 @@ def analyze(reviews: list):
     positive_threshold = 0.1
     negative_threshold = -0.1
 
-    # TODO: Find a way to "weight" some words?
-    #  For example, the sentiment of 'scary' is negative, but it's mostly used in a positive way in the reviews.
-    custom_weights = {"scary": 0.25, "spookly": 0.25}
+    # TODO: For temporary test, remove later and set context somewhere else
+    # Set context and update semantics lexicon
+    # custom_lexicon = context.get_custom_lexicon("horror")
+    # custom_analyzer = NaiveBayesAnalyzer(custom_lexicon)
 
     for r in reviews:
         # doc = nlp(r)
         opinions = extract.extract(r)
+        # blob = TextBlob(r, analyzer=custom_analyzer)
         # Getting the polarity score of every opinion extracted from a review
         polarity_scores = [TextBlob(o).sentiment.polarity for o in opinions]
         # The sum of the polarity score of each opinion from a review
         polarity_score = sum(polarity_scores) / len(polarity_scores) if len(polarity_scores) else 0
 
-        sentiment = {
+        sentiment_score = {
             "review": r,
             "polarity": polarity_score
         }
-        opinion_sentiments.append(sentiment)
+        opinion_sentiments.append(sentiment_score)
 
     return opinion_sentiments
 
 
-# sources = source.get_sources()
-# print(analyze(sources))
+sources = source.get_sources()
+print(analyze(sources))
